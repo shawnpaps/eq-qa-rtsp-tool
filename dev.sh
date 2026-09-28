@@ -125,7 +125,7 @@ sleep 1
 
 info "Starting frontend (vite) ..."
 cd frontend
-VITE_API_URL=http://localhost:3000 npm run dev &
+npm run dev &
 frontend_pid=$!
 cd ..
 success "Frontend PID: $frontend_pid  → http://localhost:5173"

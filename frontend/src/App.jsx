@@ -6,7 +6,7 @@ import VideoLibrary from './components/VideoLibrary';
 import StreamGrid from './components/StreamGrid';
 import BulkTestStreams from './components/BulkTestStreams';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 export default function App() {
   const [videos, setVideos] = useState([]);

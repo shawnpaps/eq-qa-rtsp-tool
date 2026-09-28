@@ -2,11 +2,12 @@ version: "3.9"
 
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://localhost:3001
     ports:
       - "5173:5173"
-    environment:
-      - VITE_API_URL=http://backend:3000
     depends_on:
       - backend
     networks:
@@ -15,7 +16,7 @@ services:
   backend:
     build: ./backend
     ports:
-      - "3000:3000"
+      - "3001:3000"
     volumes:
       - ./data:/data
     environment:

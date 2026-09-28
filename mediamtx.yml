@@ -30,6 +30,6 @@ webrtcServerCert: ""
 paths:
   all:
     source: "publisher"
-    sourceOnDemand: "no"
+    sourceOnDemand: "yes"
     sourceOnDemandStartTimeout: 10s
     sourceOnDemandCloseAfter: 10s

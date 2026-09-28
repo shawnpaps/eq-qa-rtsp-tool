@@ -23,6 +23,19 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage, limits: { fileSize: 500 * 1024 * 1024 } });
 
+async function removeMediaMTXPath(slug) {
+  try {
+    const host = process.env.MEDIAMTX_INTERNAL_HOST || process.env.MEDIAMTX_HOST || 'mediamtx';
+    const url = `http://${host}:9997/v3/paths/kick/${encodeURIComponent(slug)}`;
+    const res = await fetch(url, { method: 'POST' });
+    if (!res.ok && res.status !== 404) {
+      console.error(`[MediaMTX] Failed to kick path ${slug}: ${res.status} ${res.statusText}`);
+    }
+  } catch (err) {
+    console.error(`[MediaMTX] Failed to kick path ${slug}:`, err.message);
+  }
+}
+
 router.post('/', async (req, res) => {
   try {
     const { name, sourceVideoId, fpsMode, customFps, loop } = req.body;
@@ -211,6 +224,10 @@ router.delete('/nuke-all', async (req, res) => {
       }
     }
 
+    for (const stream of db.streams) {
+      await removeMediaMTXPath(stream.pathSlug);
+    }
+
     for (const video of db.videos) {
       try {
         await fs.unlink(video.filePath);
@@ -244,6 +261,7 @@ router.delete('/:id', async (req, res) => {
     const stream = db.streams.find(s => s.id === req.params.id);
     if (stream) {
       await stopStream(stream.id);
+      await removeMediaMTXPath(stream.pathSlug);
     }
     db.streams = db.streams.filter(s => s.id !== req.params.id);
     await saveDb(db);
